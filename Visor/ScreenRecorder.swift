@@ -1,24 +1,20 @@
 /*
-See LICENSE folder for this sample’s licensing information.
+ See LICENSE folder for this sample’s licensing information.
 
-Abstract:
-A model object that provides the interface to capture screen content and system audio.
-*/
+ Abstract:
+ A model object that provides the interface to capture screen content and system audio.
+ */
 
-import Foundation
-import ScreenCaptureKit
 import Combine
+import Foundation
 import OSLog
+import ScreenCaptureKit
 import SwiftUI
-
-/// A provider of audio levels from the captured samples.
-class AudioLevelsProvider: ObservableObject {
-    @Published var audioLevels = AudioLevels.zero
-}
 
 @MainActor
 class ScreenRecorder: ObservableObject {
-    
+    @Published var topSpace = 40
+
     /// The supported capture types.
     enum CaptureType {
         case display
@@ -30,6 +26,7 @@ class ScreenRecorder: ObservableObject {
     @Published var isRunning = false
     
     // MARK: - Video Properties
+
     @Published var captureType: CaptureType = .display {
         didSet { updateEngine() }
     }
@@ -50,30 +47,13 @@ class ScreenRecorder: ObservableObject {
     private var scaleFactor: Int { Int(NSScreen.main?.backingScaleFactor ?? 2) }
     
     /// A view that renders the screen content.
-    lazy var capturePreview: CapturePreview = {
-        CapturePreview()
-    }()
+    lazy var capturePreview: CapturePreview = .init()
     
+    let panelManager = FloatingPanelManager<CapturePreview>()
+
     private var availableApps = [SCRunningApplication]()
     @Published private(set) var availableDisplays = [SCDisplay]()
     @Published private(set) var availableWindows = [SCWindow]()
-    
-    // MARK: - Audio Properties
-    @Published var isAudioCaptureEnabled = true {
-        didSet {
-            updateEngine()
-            if isAudioCaptureEnabled {
-                startAudioMetering()
-            } else {
-                stopAudioMetering()
-            }
-        }
-    }
-    @Published var isAppAudioExcluded = false { didSet { updateEngine() } }
-    @Published private(set) var audioLevelsProvider = AudioLevelsProvider()
-    // A value that specifies how often to retrieve calculated audio levels.
-    private let audioLevelRefreshRate: TimeInterval = 0.1
-    private var audioMeterCancellable: AnyCancellable?
     
     // The object that manages the SCStream.
     private let captureEngine = CaptureEngine()
@@ -98,7 +78,7 @@ class ScreenRecorder: ObservableObject {
     func monitorAvailableContent() async {
         guard !isSetup else { return }
         // Refresh the lists of capturable content.
-        await self.refreshAvailableContent()
+        await refreshAvailableContent()
         Timer.publish(every: 3, on: .main, in: .common).autoconnect().sink { [weak self] _ in
             guard let self = self else { return }
             Task {
@@ -118,12 +98,7 @@ class ScreenRecorder: ObservableObject {
             await monitorAvailableContent()
             isSetup = true
         }
-        
-        // If the user enables audio capture, start monitoring the audio stream.
-        if isAudioCaptureEnabled {
-            startAudioMetering()
-        }
-        
+
         do {
             let config = streamConfiguration
             let filter = contentFilter
@@ -132,6 +107,7 @@ class ScreenRecorder: ObservableObject {
             // Start the stream and await new video frames.
             for try await frame in captureEngine.startCapture(configuration: config, filter: filter) {
                 capturePreview.updateFrame(frame)
+                
                 if contentSize != frame.size {
                     // Update the content size if it changed.
                     contentSize = frame.size
@@ -148,20 +124,7 @@ class ScreenRecorder: ObservableObject {
     func stop() async {
         guard isRunning else { return }
         await captureEngine.stopCapture()
-        stopAudioMetering()
         isRunning = false
-    }
-    
-    private func startAudioMetering() {
-        audioMeterCancellable = Timer.publish(every: 0.1, on: .main, in: .common).autoconnect().sink { [weak self] _ in
-            guard let self = self else { return }
-            self.audioLevelsProvider.audioLevels = self.captureEngine.audioLevels
-        }
-    }
-    
-    private func stopAudioMetering() {
-        audioMeterCancellable?.cancel()
-        audioLevelsProvider.audioLevels = AudioLevels.zero
     }
     
     /// - Tag: UpdateCaptureConfig
@@ -200,23 +163,23 @@ class ScreenRecorder: ObservableObject {
     }
     
     private var streamConfiguration: SCStreamConfiguration {
-        
         let streamConfig = SCStreamConfiguration()
         
-        // Configure audio capture.
-        streamConfig.capturesAudio = isAudioCaptureEnabled
-        streamConfig.excludesCurrentProcessAudio = isAppAudioExcluded
-        
+        streamConfig.capturesAudio = false
         // Configure the display content width and height.
         if captureType == .display, let display = selectedDisplay {
             streamConfig.width = display.width * scaleFactor
-            streamConfig.height = display.height * scaleFactor
+            streamConfig.height = (display.height - topSpace) * scaleFactor
+
+            streamConfig.sourceRect = CGRect(x: 0, y: topSpace, width: display.width,
+                                             height: display.height - topSpace)
+            streamConfig.showsCursor = false
         }
         
         // Configure the window content width and height.
         if captureType == .window, let window = selectedWindow {
-            streamConfig.width = Int(window.frame.width) * 2
-            streamConfig.height = Int(window.frame.height) * 2
+            streamConfig.width = Int(window.frame.width) // * 2
+            streamConfig.height = Int(window.frame.height) // * 2
         }
         
         // Set the capture interval at 60 fps.
@@ -225,6 +188,7 @@ class ScreenRecorder: ObservableObject {
         // Increase the depth of the frame queue to ensure high fps at the expense of increasing
         // the memory footprint of WindowServer.
         streamConfig.queueDepth = 5
+        streamConfig.pixelFormat = kCVPixelFormatType_32BGRA
         
         return streamConfig
     }
@@ -256,11 +220,11 @@ class ScreenRecorder: ObservableObject {
     
     private func filterWindows(_ windows: [SCWindow]) -> [SCWindow] {
         windows
-        // Sort the windows by app name.
+            // Sort the windows by app name.
             .sorted { $0.owningApplication?.applicationName ?? "" < $1.owningApplication?.applicationName ?? "" }
-        // Remove windows that don't have an associated .app bundle.
+            // Remove windows that don't have an associated .app bundle.
             .filter { $0.owningApplication != nil && $0.owningApplication?.applicationName != "" }
-        // Remove this app's window from the list.
+            // Remove this app's window from the list.
             .filter { $0.owningApplication?.bundleIdentifier != Bundle.main.bundleIdentifier }
     }
 }

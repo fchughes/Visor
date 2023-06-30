@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "C4B0DAA6276BA4460015082A"
-               BuildableName = "CaptureSample.app"
-               BlueprintName = "CaptureSample"
-               ReferencedContainer = "container:CaptureSample.xcodeproj">
+               BuildableName = "Visor.app"
+               BlueprintName = "Visor"
+               ReferencedContainer = "container:Visor.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -45,9 +45,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "C4B0DAA6276BA4460015082A"
-            BuildableName = "CaptureSample.app"
-            BlueprintName = "CaptureSample"
-            ReferencedContainer = "container:CaptureSample.xcodeproj">
+            BuildableName = "Visor.app"
+            BlueprintName = "Visor"
+            ReferencedContainer = "container:Visor.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </LaunchAction>
@@ -62,9 +62,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "C4B0DAA6276BA4460015082A"
-            BuildableName = "CaptureSample.app"
-            BlueprintName = "CaptureSample"
-            ReferencedContainer = "container:CaptureSample.xcodeproj">
+            BuildableName = "Visor.app"
+            BlueprintName = "Visor"
+            ReferencedContainer = "container:Visor.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>
