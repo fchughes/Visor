@@ -21,5 +21,10 @@ The first time you run the app, you will be prompted to grant screen share acces
 
 Depending on your OS version and screen resolution, you may need to modify the "top spacing" in the settings to account for differences in the height of the menu bar, since we aren't able to draw to that region of the screen. 
 
+
+
+https://github.com/fchughes/Visor/assets/129426794/ff63682d-06c4-48b4-a993-537cb3e72e59
+
+
 ## License
 This project is open-sourced under the MIT license. See [LICENSE](LICENSE) for more information.
