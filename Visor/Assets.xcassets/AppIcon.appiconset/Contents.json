@@ -36,16 +36,19 @@
       "size" : "256x256"
     },
     {
+      "filename" : "visor_icon1_512 1.jpg",
       "idiom" : "mac",
       "scale" : "2x",
       "size" : "256x256"
     },
     {
+      "filename" : "visor_icon1_512.jpg",
       "idiom" : "mac",
       "scale" : "1x",
       "size" : "512x512"
     },
     {
+      "filename" : "visor_icon_1.jpg",
       "idiom" : "mac",
       "scale" : "2x",
       "size" : "512x512"
