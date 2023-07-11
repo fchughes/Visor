@@ -20,6 +20,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		08428B382A5DFFBD0002AD9D /* PRIVACY.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = PRIVACY.md; sourceTree = "<group>"; };
 		08673EC52A4B5F2100D6EF57 /* crt.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; name = crt.metal; path = shaders/crt.metal; sourceTree = "<group>"; };
 		0874C4692A4F5D820021379D /* invert.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; name = invert.metal; path = shaders/invert.metal; sourceTree = "<group>"; };
 		08915C772A4CF08C003A8B77 /* FloatingPanel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FloatingPanel.swift; sourceTree = "<group>"; };
@@ -70,6 +71,7 @@
 		C4B0DA9E276BA4460015082A = {
 			isa = PBXGroup;
 			children = (
+				08428B382A5DFFBD0002AD9D /* PRIVACY.md */,
 				8D89E0E7125AFE6B4E2E6500 /* README.md */,
 				C4B0DAA9276BA4460015082A /* Visor */,
 				C4B0DAA8276BA4460015082A /* Products */,
@@ -207,7 +209,6 @@
 /* Begin XCBuildConfiguration section */
 		C4B0DAB4276BA4480015082A /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 9AEEB9169F5D7FC75E6B35A2 /* SampleCode.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -270,7 +271,6 @@
 		};
 		C4B0DAB5276BA4480015082A /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 9AEEB9169F5D7FC75E6B35A2 /* SampleCode.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -326,7 +326,6 @@
 		};
 		C4B0DAB7276BA4480015082A /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 9AEEB9169F5D7FC75E6B35A2 /* SampleCode.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -362,7 +361,6 @@
 		};
 		C4B0DAB8276BA4480015082A /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 9AEEB9169F5D7FC75E6B35A2 /* SampleCode.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
