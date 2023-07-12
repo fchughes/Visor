@@ -63,13 +63,17 @@ class ScreenRecorder: ObservableObject {
     // Combine subscribers.
     private var subscriptions = Set<AnyCancellable>()
     
+    @Published var isUnauthorized: Bool = false
+    
     var canRecord: Bool {
         get async {
             do {
                 // If the app doesn't have Screen Recording permission, this call generates an exception.
                 try await SCShareableContent.excludingDesktopWindows(false, onScreenWindowsOnly: true)
+                isUnauthorized = false
                 return true
             } catch {
+                isUnauthorized = true
                 return false
             }
         }
@@ -140,7 +144,18 @@ class ScreenRecorder: ObservableObject {
         let filter: SCContentFilter
         switch captureType {
         case .display:
-            guard let display = selectedDisplay else { fatalError("No display selected.") }
+            guard let display = selectedDisplay else {
+                let alert = NSAlert()
+                alert.messageText = "Insufficient Permissions"
+                alert.informativeText = "Screen recording permission is required for this app to function. Please grant this permission by navigating to System Preferences > Privacy & Security > Screen Capture and reopen the app. Closing this window will exit the app."
+                alert.addButton(withTitle: "OK")
+                alert.alertStyle = .warning
+                alert.runModal()
+                exit(0)
+            }
+
+//            guard let display = selectedDisplay else { fatalError("No display selected.") }
+            
             var excludedApps = [SCRunningApplication]()
             // If a user chooses to exclude the app from the stream,
             // exclude it by matching its bundle identifier.

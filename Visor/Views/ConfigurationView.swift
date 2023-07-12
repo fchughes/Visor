@@ -17,7 +17,9 @@ struct ConfigurationView: View {
             .disabled(screenRecorder.isRunning)
         Button("Visor Down") {
             Task {
-                screenRecorder.panelManager.presentPanel(content: { screenRecorder.capturePreview }, contentRect: CGRect(x: 0, y: screenRecorder.topSpace, width: 1512, height: 982 - screenRecorder.topSpace))
+                await screenRecorder.monitorAvailableContent()
+                guard let display = screenRecorder.selectedDisplay else { return }
+                screenRecorder.panelManager.presentPanel(content: { screenRecorder.capturePreview }, contentRect: CGRect(x: 0, y: screenRecorder.topSpace, width: display.width, height: display.height - screenRecorder.topSpace))
                 await screenRecorder.start()
             }
         }
